@@ -1,4 +1,4 @@
-service: nicolasOriti-ejercicioSls
+service: nicolasOriti-ejercicioEbased
 
 provider:
   name: aws
@@ -17,9 +17,9 @@ provider:
           - !Ref ClientCreatedTopic
 
 functions:
-  - ${file(create-client/create-client.yml)}
-  - ${file(create-card/create-card.yml)}
-  - ${file(create-gift/create-gift.yml)}
+  - ${file(src/create-client/create-client.yml)}
+  - ${file(src/create-card/create-card.yml)}
+  - ${file(src/create-gift/create-gift.yml)}
     
 resources:
   Resources:
