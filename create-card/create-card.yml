@@ -1,0 +1,8 @@
+CreateCard:
+    handler: create-card/create-card.handler
+    name: ${self:service}-${self:provider.stage}-create-card-function
+    environment:
+      CLIENTS_TABLE: !Ref ClientsTable
+    events:
+      - sqs:
+          arn: !GetAtt CreateCardQueue.Arn

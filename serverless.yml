@@ -1,0 +1,113 @@
+service: nicolasOriti-ejercicioSls
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  lambdaHashingVersion: 20201221
+  iamRoleStatements: 
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:PutItem
+          - sns:Publish
+        Resource:
+          - !GetAtt ClientsTable.Arn
+          - !Ref ClientCreatedTopic
+
+functions:
+  - ${file(create-client/create-client.yml)}
+  - ${file(create-card/create-card.yml)}
+  - ${file(create-gift/create-gift.yml)}
+    
+resources:
+  Resources:
+
+    ClientsTable:
+      Type: AWS::DynamoDB::Table
+      # DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:service}-${self:provider.stage}-client-table
+        AttributeDefinitions:
+          - AttributeName: dni
+            AttributeType: S
+        KeySchema:
+          - AttributeName: dni
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    ClientCreatedTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: Client Created Topic
+        TopicName: ${self:service}-${self:provider.stage}-client-created-topic
+        Subscription:
+          - Protocol: sqs
+            Endpoint: !GetAtt CreateCardQueue.Arn
+          - Protocol: sqs
+            Endpoint: !GetAtt CreateGiftQueue.Arn
+
+    CreateCardQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-${self:provider.stage}-create-card-queue
+    
+    CreateCardQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties: 
+        PolicyDocument: 
+          Statement:
+            - Effect: Allow
+              Action: 
+                - SQS:*
+              Resource: !GetAtt CreateCardQueue.Arn
+              Principal:
+                AWS:
+                  - !Ref AWS::AccountId
+            - Effect: Allow
+              Principal:
+                AWS: 
+                  - '*'
+              Action: 
+                - SQS:SendMessage
+              Resource: !GetAtt CreateCardQueue.Arn
+              Condition:
+                ArnLike:
+                  aws:SourceArn:
+                    - !Ref ClientCreatedTopic
+        Queues: 
+          - !Ref CreateCardQueue
+
+    CreateGiftQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-${self:provider.stage}-create-gift-queue
+    
+    CreateGiftQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties: 
+        PolicyDocument: 
+          Statement:
+            - Effect: Allow
+              Action: 
+                - SQS:*
+              Resource: !GetAtt CreateGiftQueue.Arn
+              Principal:
+                AWS:
+                  - !Ref AWS::AccountId
+            - Effect: Allow
+              Principal:
+                AWS: 
+                  - '*'
+              Action: 
+                - SQS:SendMessage
+              Resource: !GetAtt CreateGiftQueue.Arn
+              Condition:
+                ArnLike:
+                  aws:SourceArn:
+                    - !Ref ClientCreatedTopic
+        Queues: 
+          - !Ref CreateGiftQueue

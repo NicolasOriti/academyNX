@@ -1,0 +1,10 @@
+CreateClient:
+    handler: create-client/create-client.handler
+    name: ${self:service}-${self:provider.stage}-create-client-function
+    environment:
+      CLIENTS_TABLE: !Ref ClientsTable
+      CLIENTS_CREATED_TOPIC: !Ref ClientCreatedTopic
+    events:
+      - http:
+          path: /client
+          method: post
