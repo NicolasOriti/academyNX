@@ -1,0 +1,9 @@
+GetByIdClient:
+    handler: src/getById-client/handler/getById-client.handler
+    name: ${self:service}-${self:provider.stage}-getById-client-function
+    environment:
+      CLIENTS_TABLE: !Ref ClientsTable
+    events:
+      - http:
+          path: /client/{id}
+          method: get

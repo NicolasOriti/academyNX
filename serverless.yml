@@ -1,4 +1,4 @@
-service: nicolasOriti-ejercicioEbased
+service: nicolasOriti-practicoIntegrador
 
 provider:
   name: aws
@@ -9,8 +9,7 @@ provider:
   iamRoleStatements: 
       - Effect: Allow
         Action:
-          - dynamodb:UpdateItem
-          - dynamodb:PutItem
+          - dynamodb:*
           - sns:Publish
         Resource:
           - !GetAtt ClientsTable.Arn
@@ -20,6 +19,8 @@ functions:
   - ${file(src/create-client/create-client.yml)}
   - ${file(src/create-card/create-card.yml)}
   - ${file(src/create-gift/create-gift.yml)}
+  - ${file(src/getAll-client/getAll-client.yml)}
+  - ${file(src/getById-client/getById-client.yml)}
     
 resources:
   Resources:

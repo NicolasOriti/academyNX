@@ -1,0 +1,9 @@
+GetAllClient:
+    handler: src/getAll-client/handler/getAll-client.handler
+    name: ${self:service}-${self:provider.stage}-getAll-client-function
+    environment:
+      CLIENTS_TABLE: !Ref ClientsTable
+    events:
+      - http:
+          path: /client
+          method: get

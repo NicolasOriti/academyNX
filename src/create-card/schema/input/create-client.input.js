@@ -4,6 +4,7 @@ class CreateCardValidation extends InputValidation {
   constructor(payload, meta) {
     super({
       type: 'CLIENT.CREATE_CLIENT',
+      specversion: 'v1.0.0',
       source: meta.source,
       payload: payload,
       schema: {
