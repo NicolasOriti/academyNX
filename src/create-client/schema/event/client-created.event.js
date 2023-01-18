@@ -4,6 +4,7 @@ class ClientCreatedEvent extends DownstreamEvent {
   constructor(payload, meta) {
     super({
       type: 'CLIENT.CREATE_CLIENT',
+      specversion: 'v1.0.0',
       payload: payload,
       meta: meta,
       schema: {
