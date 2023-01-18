@@ -1,6 +1,6 @@
 const { InputValidation } = require('ebased/schema/inputValidation');
 
-class CreateClientValidation extends InputValidation {
+class CreateCardValidation extends InputValidation {
   constructor(payload, meta) {
     super({
       type: 'CLIENT.CREATE_CLIENT',
@@ -16,4 +16,4 @@ class CreateClientValidation extends InputValidation {
   }
 }
 
-module.exports = { CreateClientValidation };
+module.exports = { CreateCardValidation };
