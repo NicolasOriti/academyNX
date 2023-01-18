@@ -1,5 +1,5 @@
 CreateClient:
-    handler: create-client/create-client.handler
+    handler: src/create-client/handler/create-client.handler
     name: ${self:service}-${self:provider.stage}-create-client-function
     environment:
       CLIENTS_TABLE: !Ref ClientsTable

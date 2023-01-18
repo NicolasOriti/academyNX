@@ -1,5 +1,5 @@
 CreateGift:
-    handler: create-gift/create-gift.handler
+    handler: src/create-gift/handler/create-gift.handler
     name: ${self:service}-${self:provider.stage}-create-gift-function
     environment:
       CLIENTS_TABLE: !Ref ClientsTable
