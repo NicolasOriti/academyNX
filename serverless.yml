@@ -6,14 +6,14 @@ provider:
   stage: dev
   region: us-east-1
   lambdaHashingVersion: 20201221
-  iamRoleStatements: 
-      - Effect: Allow
-        Action:
-          - dynamodb:*
-          - sns:Publish
-        Resource:
-          - !GetAtt ClientsTable.Arn
-          - !Ref ClientCreatedTopic
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+        - sns:Publish
+      Resource:
+        - !GetAtt ClientsTable.Arn
+        - !Ref ClientCreatedTopic
 
 functions:
   - ${file(src/create-client/create-client.yml)}
@@ -21,10 +21,10 @@ functions:
   - ${file(src/create-gift/create-gift.yml)}
   - ${file(src/getAll-client/getAll-client.yml)}
   - ${file(src/getById-client/getById-client.yml)}
-    
+  - ${file(src/update-client/update-client.yml)}
+
 resources:
   Resources:
-
     ClientsTable:
       Type: AWS::DynamoDB::Table
       # DeletionPolicy: Retain
@@ -55,14 +55,14 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: ${self:service}-${self:provider.stage}-create-card-queue
-    
+
     CreateCardQueuePolicy:
       Type: AWS::SQS::QueuePolicy
-      Properties: 
-        PolicyDocument: 
+      Properties:
+        PolicyDocument:
           Statement:
             - Effect: Allow
-              Action: 
+              Action:
                 - SQS:*
               Resource: !GetAtt CreateCardQueue.Arn
               Principal:
@@ -70,30 +70,30 @@ resources:
                   - !Ref AWS::AccountId
             - Effect: Allow
               Principal:
-                AWS: 
+                AWS:
                   - '*'
-              Action: 
+              Action:
                 - SQS:SendMessage
               Resource: !GetAtt CreateCardQueue.Arn
               Condition:
                 ArnLike:
                   aws:SourceArn:
                     - !Ref ClientCreatedTopic
-        Queues: 
+        Queues:
           - !Ref CreateCardQueue
 
     CreateGiftQueue:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: ${self:service}-${self:provider.stage}-create-gift-queue
-    
+
     CreateGiftQueuePolicy:
       Type: AWS::SQS::QueuePolicy
-      Properties: 
-        PolicyDocument: 
+      Properties:
+        PolicyDocument:
           Statement:
             - Effect: Allow
-              Action: 
+              Action:
                 - SQS:*
               Resource: !GetAtt CreateGiftQueue.Arn
               Principal:
@@ -101,14 +101,14 @@ resources:
                   - !Ref AWS::AccountId
             - Effect: Allow
               Principal:
-                AWS: 
+                AWS:
                   - '*'
-              Action: 
+              Action:
                 - SQS:SendMessage
               Resource: !GetAtt CreateGiftQueue.Arn
               Condition:
                 ArnLike:
                   aws:SourceArn:
                     - !Ref ClientCreatedTopic
-        Queues: 
+        Queues:
           - !Ref CreateGiftQueue

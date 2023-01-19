@@ -23,14 +23,17 @@ const createClientDomain = async (commandPayload, commandMeta) => {
     };
   }
 
-  await createClientService(commandPayload);
+  const clientCreated = await createClientService(commandPayload);
   await publishClientCreated(
     new ClientCreatedEvent(commandPayload, commandMeta)
   );
 
   return {
     statusCode: 200,
-    body: 'Client added succesfully',
+    body: {
+      ...clientCreated,
+      message: 'Cliente agregado con exito',
+    },
   };
 };
 
