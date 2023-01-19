@@ -13,8 +13,10 @@ provider:
         - sns:Publish
       Resource:
         - !GetAtt ClientsTable.Arn
+        - !GetAtt PurchaseTable.Arn
         - !Ref ClientCreatedTopic
         - !Ref BirthUpdatedTopic
+        - !Ref PurchaseCreatedTopic
 
 functions:
   - ${file(src/create-client/create-client.yml)}
@@ -24,6 +26,8 @@ functions:
   - ${file(src/getById-client/getById-client.yml)}
   - ${file(src/update-client/update-client.yml)}
   # - ${file(src/delete-client/delete-client.yml)}
+  - ${file(src/create-purchase/create-purchase.yml)}
+  - ${file(src/newPurchase-client/newPurchase-client.yml)}
 
 resources:
   Resources:
@@ -37,6 +41,20 @@ resources:
             AttributeType: S
         KeySchema:
           - AttributeName: dni
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    PurchaseTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${self:provider.stage}-purchase-table
+        AttributeDefinitions:
+          - AttributeName: uuid
+            AttributeType: S
+        KeySchema:
+          - AttributeName: uuid
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -56,11 +74,18 @@ resources:
     BirthUpdatedTopic:
       Type: AWS::SNS::Topic
       Properties:
-        DisplayName: Birth Updated Topic
         TopicName: ${self:service}-${self:provider.stage}-birth-updated-topic
         Subscription:
           - Protocol: sqs
             Endpoint: !GetAtt CreateGiftQueue.Arn
+
+    PurchaseCreatedTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:service}-${self:provider.stage}-purchase-created-topic
+        Subscription:
+          - Protocol: sqs
+            Endpoint: !GetAtt NewClientPurchaseQueue.Arn
 
     CreateCardQueue:
       Type: AWS::SQS::Queue
@@ -123,3 +148,26 @@ resources:
                     - !Ref ClientCreatedTopic
         Queues:
           - !Ref CreateGiftQueue
+
+    NewClientPurchaseQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-${self:provider.stage}-newClientPurchaseQueue
+
+    NewClientPurchaseQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+          - { Ref: NewClientPurchaseQueue }
+        PolicyDocument:
+          Statement:
+            - Effect: 'Allow'
+              Action:
+                - 'SQS:SendMessage'
+              Principal:
+                Service: 'sns.amazonaws.com'
+              Resource:
+                - !GetAtt NewClientPurchaseQueue.Arn
+              Condition:
+                ArnLike:
+                  aws:SourceArn: !Ref PurchaseCreatedTopic

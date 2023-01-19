@@ -1,0 +1,8 @@
+newPurchase:
+  handler: src/newPurchase-client/handler/newPurchase-client.handler
+  name: ${self:service}-${self:provider.stage}-newPurchase-client-function
+  environment:
+    CLIENTS_TABLE: !Ref ClientsTable
+  events:
+    - sqs:
+        arn: !GetAtt NewClientPurchaseQueue.Arn

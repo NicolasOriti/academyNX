@@ -28,7 +28,6 @@ function create(client) {
   )}-${randomNumber(0000, 9999)}`;
   const expirationDate = `${randomNumber(01, 12)}/${randomNumber(21, 35)}`;
   const securityCode = `${randomNumber(000, 999)}`;
-  console.log('*****************EDAD:', calculateAge(client.birth));
   let type = calculateAge(client.birth) > 45 ? 'Gold' : 'Classic';
 
   return {

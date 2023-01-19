@@ -10,4 +10,5 @@ const createCardDomain = async (eventPayload, eventMeta, rawEvent) => {
 
   return { body: clientCard };
 };
+
 module.exports = { createCardDomain };

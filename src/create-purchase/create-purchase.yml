@@ -1,0 +1,11 @@
+createPurchase:
+  handler: src/create-purchase/handler/create-purchase.handler
+  name: ${self:service}-${self:provider.stage}-create-purchase-function
+  environment:
+    CLIENTS_TABLE: { Ref: ClientsTable }
+    PURCHASE_TABLE: { Ref: PurchaseTable }
+    PURCHASE_CREATED_TOPIC_ARN: { Ref: PurchaseCreatedTopic }
+  events:
+    - http:
+        path: /purchases
+        method: post

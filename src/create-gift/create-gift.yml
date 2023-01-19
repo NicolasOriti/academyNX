@@ -1,8 +1,8 @@
 CreateGift:
-    handler: src/create-gift/handler/create-gift.handler
-    name: ${self:service}-${self:provider.stage}-create-gift-function
-    environment:
-      CLIENTS_TABLE: !Ref ClientsTable
-    events:
-      - sqs:
-          arn: !GetAtt CreateGiftQueue.Arn
+  handler: src/create-gift/handler/create-gift.handler
+  name: ${self:service}-${self:provider.stage}-create-gift-function
+  environment:
+    CLIENTS_TABLE: !Ref ClientsTable
+  events:
+    - sqs:
+        arn: !GetAtt CreateGiftQueue.Arn
