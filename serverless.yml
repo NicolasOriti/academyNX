@@ -22,6 +22,7 @@ functions:
   - ${file(src/getAll-client/getAll-client.yml)}
   - ${file(src/getById-client/getById-client.yml)}
   - ${file(src/update-client/update-client.yml)}
+  # - ${file(src/delete-client/delete-client.yml)}
 
 resources:
   Resources:
@@ -48,6 +49,15 @@ resources:
         Subscription:
           - Protocol: sqs
             Endpoint: !GetAtt CreateCardQueue.Arn
+          - Protocol: sqs
+            Endpoint: !GetAtt CreateGiftQueue.Arn
+
+    BirthUpdatedTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: Birth Updated Topic
+        TopicName: ${self:service}-${self:provider.stage}-birth-updated-topic
+        Subscription:
           - Protocol: sqs
             Endpoint: !GetAtt CreateGiftQueue.Arn
 

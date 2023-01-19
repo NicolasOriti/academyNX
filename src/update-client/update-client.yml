@@ -1,10 +1,11 @@
-CreateClient:
+updateClient:
   handler: src/update-client/handler/update-client.handler
-  name: ${self:service}-${self:provider.stage}-create-client-function
+  name: ${self:service}-${self:provider.stage}-update-client-function
   environment:
     CLIENTS_TABLE: !Ref ClientsTable
     CLIENTS_CREATED_TOPIC: !Ref ClientCreatedTopic
+    CLIENT_BIRTH_UPDATED_TOPIC: !Ref BirthUpdatedTopic
   events:
     - http:
-        path: /client/{id}
+        path: /client
         method: put
