@@ -13,6 +13,7 @@ class CreateClientValidation extends InputValidation {
         lastName: { type: String, required: true },
         dni: { type: String, required: true },
         birth: { type: String, required: true },
+        enable: { type: Boolean, required: false },
       },
     });
   }

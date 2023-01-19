@@ -16,7 +16,12 @@ const createClientDomain = async (commandPayload, commandMeta) => {
     };
   }
 
-  const clientCreated = await createClientService(commandPayload);
+  const params = {
+    ...commandPayload,
+    enable: true,
+  };
+
+  const clientCreated = await createClientService(params);
   await publishClientCreated(new ClientCreatedEvent(commandPayload, commandMeta));
 
   return {

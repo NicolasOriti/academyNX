@@ -1,32 +1,9 @@
-const DYNAMODB = require('aws-sdk/clients/dynamodb');
+const { commandMapper } = require('ebased/handler');
+const inputMode = require('ebased/handler/input/commandApi');
+const outputMode = require('ebased/handler/output/commandApi');
 
-const dynamoDb = new DYNAMODB({
-  region: 'us-east-1',
-});
+const { getAllClientDomain } = require('../domain/getAll-client.domain');
 
-module.exports.handler = (event, context, callback) => {
-  const params = {
-    TableName: process.env.CLIENTS_TABLE,
-  };
-
-  console.log('Scanning Clients table.');
-  const onScan = (err, data) => {
-    if (err) {
-      console.log(
-        'Scan failed to load data. Error JSON:',
-        JSON.stringify(err, null, 2)
-      );
-      callback(err);
-    } else {
-      console.log('Scan succeeded.');
-      return callback(null, {
-        statusCode: 200,
-        body: JSON.stringify({
-          clients: data.Items,
-        }),
-      });
-    }
-  };
-
-  dynamoDb.scan(params, onScan);
+module.exports.handler = async (command, context) => {
+  return commandMapper({ command, context }, inputMode, getAllClientDomain, outputMode);
 };

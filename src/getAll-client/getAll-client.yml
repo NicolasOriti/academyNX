@@ -5,5 +5,5 @@ GetAllClient:
       CLIENTS_TABLE: !Ref ClientsTable
     events:
       - http:
-          path: /client
+          path: /clients
           method: get

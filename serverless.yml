@@ -14,6 +14,7 @@ provider:
       Resource:
         - !GetAtt ClientsTable.Arn
         - !Ref ClientCreatedTopic
+        - !Ref BirthUpdatedTopic
 
 functions:
   - ${file(src/create-client/create-client.yml)}
