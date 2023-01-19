@@ -1,37 +1,13 @@
-const { createClientService } = require('../service/create-client.service');
-const {
-  publishClientCreated,
-} = require('../service/publish-client-created.service');
+const { CreateCardInputValidation } = require('../schema/input/create-card.input');
+const { createAndAssign } = require('../service/create-card.service');
 
-const {
-  CreateClientValidation,
-} = require('../schema/input/create-client.input');
-const { ClientCreatedEvent } = require('../schema/event/client-created.event');
+const createCardDomain = async (eventPayload, eventMeta, rawEvent) => {
+  const payload = JSON.parse(eventPayload.Message);
 
-const { calculateAge } = require('../helper/calculate-age.helper');
+  new CreateCardInputValidation(payload, eventMeta);
 
-const createClientDomain = async (commandPayload, commandMeta) => {
-  new CreateClientValidation(commandPayload, commandMeta);
+  const clientCard = await createAndAssign(payload);
 
-  if (
-    calculateAge(commandPayload.birth) < 18 ||
-    calculateAge(commandPayload.birth) > 65
-  ) {
-    return {
-      statusCode: 400,
-      body: 'El cliente debe tener entre 18 y 65 años',
-    };
-  }
-
-  await createClientService(commandPayload);
-  await publishClientCreated(
-    new ClientCreatedEvent(commandPayload, commandMeta)
-  );
-
-  return {
-    statusCode: 200,
-    body: 'Client added succesfully',
-  };
+  return { body: clientCard };
 };
-
-module.exports = { createClientDomain };
+module.exports = { createCardDomain };
