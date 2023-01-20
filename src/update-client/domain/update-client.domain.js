@@ -37,9 +37,10 @@ const updateClientDomain = async (commandPayload, commandMeta) => {
     };
   }
 
-  const updatedProperties = (await updateClientService(commandPayload.dni, params)).Attributes;
+  const updatedProperties = await updateClientService(params, commandPayload.dni);
 
   if (client.birth != updatedProperties.birth) {
+    console.log('*******************CAMBIO BIRTH');
     await publishBirthUpdated(
       new BirthUpdatedEvent({ dni: client.dni, ...updatedProperties }, commandMeta)
     );

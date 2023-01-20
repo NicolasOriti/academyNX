@@ -29,7 +29,9 @@ async function updateClientService(commandPayload, clientId) {
 
   const client = await dynamo.updateItem(params);
 
-  return client.Item;
+  console.log('************This is client', client.Attributes);
+
+  return client.Attributes;
 }
 
 module.exports = { updateClientService };

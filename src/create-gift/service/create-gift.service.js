@@ -6,6 +6,7 @@ const dynamodb = new DYNAMODB({
 
 const createGiftService = async (client) => {
   const season = getSeason(new Date(client.birth).getMonth() + 1);
+  console.log('*******************SEASON', season);
   let gift;
 
   switch (season) {
@@ -29,15 +30,15 @@ const createGiftService = async (client) => {
 };
 
 const getSeason = (month) => {
-  if (3 >= month && month <= 5) {
+  if (3 <= month && month <= 5) {
     return 'autum';
   }
 
-  if (6 >= month && month <= 8) {
+  if (6 <= month && month <= 8) {
     return 'winter';
   }
 
-  if (9 >= month && month <= 11) {
+  if (9 <= month && month <= 11) {
     return 'spring';
   }
 
