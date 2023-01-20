@@ -25,7 +25,7 @@ functions:
   - ${file(src/getAll-client/getAll-client.yml)}
   - ${file(src/getById-client/getById-client.yml)}
   - ${file(src/update-client/update-client.yml)}
-  # - ${file(src/delete-client/delete-client.yml)}
+  - ${file(src/delete-client/delete-client.yml)}
   - ${file(src/create-purchase/create-purchase.yml)}
   - ${file(src/newPurchase-client/newPurchase-client.yml)}
 

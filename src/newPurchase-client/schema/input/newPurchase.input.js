@@ -2,7 +2,6 @@ const { InputValidation } = require('ebased/schema/inputValidation');
 
 class NewClientPurchaseValidation extends InputValidation {
   constructor(payload, meta) {
-    console.log('payload in validator: ', payload);
     super({
       type: 'CLIENT.NEW_PURCHASE',
       specversion: 'v1.0.0',
